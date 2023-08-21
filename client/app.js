@@ -1,3 +1,5 @@
+const socket = io();
+
 // Global variables
 let userName = ""; // Stores the username
 
@@ -8,6 +10,8 @@ const messagesList = document.getElementById("messages-list");
 const addMessageForm = document.getElementById("add-messages-form");
 const userNameInput = document.getElementById("username");
 const messageContentInput = document.getElementById("message-content");
+
+socket.on('message', ({ author, content }) => addMessage(author, content))
 
 // Event listener for login form submission
 loginForm.addEventListener("submit", function (event) {
@@ -41,22 +45,20 @@ function login(event) {
 }
 
 // Function to handle form submission for sending a message
-function sendMessage(event) {
-  event.preventDefault();
+function sendMessage(e) {
+  e.preventDefault();
 
-  const messageContent = messageContentInput.value;
+  let messageContent = messageContentInput.value;
 
   // Validate the input
-  if (!messageContent) {
-    alert("Please enter a message.");
-    return;
+  if (!messageContent.length) {
+    alert('You have to type something!');
+  } 
+  else {
+    addMessage(userName, messageContent);
+    socket.emit('message', { author: userName, content:messageContent })
+    messageContentInput.value = '';
   }
-
-  // Add the message to the messages list
-  addMessage(userName, messageContent);
-
-  // Clear the input field
-  messageContentInput.value = "";
 }
 
 // Function to add a message to the messages list
