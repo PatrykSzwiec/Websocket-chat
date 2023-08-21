@@ -99,6 +99,10 @@ p {
   font-size: 0.9rem;
   max-width: 200px;
 }
+.message__system {
+  font-style: italic; /* Example styling for system messages */
+  color: lightblue;
+}
 
 .message--self .message__content {
   background: #3498db;

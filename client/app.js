@@ -11,7 +11,21 @@ const addMessageForm = document.getElementById("add-messages-form");
 const userNameInput = document.getElementById("username");
 const messageContentInput = document.getElementById("message-content");
 
-socket.on('message', ({ author, content }) => addMessage(author, content))
+socket.on('message', ({ author, content, system }) => {
+  if (system) {
+    if (author === 'Chat Bot') {
+      if (content.includes('You have joined the conversation.')) {
+        // Handle the special system message for the newly joined user
+        addSystemMessage(content);
+      } else {
+        // Handle regular system messages
+        addSystemMessage(content);
+      }
+    }
+  } else {
+    addMessage(author, content); // Handle regular messages
+  }
+});
 
 // Event listener for login form submission
 loginForm.addEventListener("submit", function (event) {
@@ -42,6 +56,7 @@ function login(event) {
   // Hide the login form and show the messages section
   loginForm.classList.remove("show");
   messagesSection.classList.add("show");
+  socket.emit('user-login', userName);
 }
 
 // Function to handle form submission for sending a message
@@ -74,6 +89,20 @@ function addMessage(author, content) {
   message.innerHTML = `
     <h3 class="message__author">${userName === author ? "You" : author}</h3>
     <div class="message__content">
+      ${content}
+    </div>
+  `;
+
+  messagesList.appendChild(message);
+}
+
+function addSystemMessage(content) {
+  const message = document.createElement("li");
+  message.classList.add("message");
+  message.classList.add("message--system");
+
+  message.innerHTML = `
+    <div class="message__content message__system">
       ${content}
     </div>
   `;
