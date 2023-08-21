@@ -1,0 +1,13 @@
+{
+  "name": "websocket-chat",
+  "version": "1.0.0",
+  "author": "Patryk Szwiec",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1",
+    "yarn": "^1.22.19"
+  },
+  "scripts": {
+    "start": "nodemon server.js"
+  }
+}
